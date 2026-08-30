@@ -106,6 +106,12 @@ if (routing_mode !== 'custom') {
 const proxy_mode = uci.get(uciconfig, ucimain, 'proxy_mode') || 'redirect_tproxy',
       default_interface = uci.get(uciconfig, ucicontrol, 'bind_interface');
 
+/* add clash_api const start */
+const enable_clash_api = uci.get(uciconfig, uciexp, 'enable_clash_api'),
+	  secret = uci.get(uciconfig, uciexp, 'secret'),
+	  default_mode = uci.get(uciconfig, uciexp, 'default_mode'),
+      external_controller = uci.get(uciconfig, uciexp, 'external_controller');
+
 const mixed_port = uci.get(uciconfig, uciinfra, 'mixed_port') || '5330';
 
 let self_mark, redirect_port, tproxy_port, tun_name,
@@ -966,7 +972,12 @@ if (routing_mode in ['bypass_mainland_china', 'custom']) {
 			path: RUN_DIR + '/cache.db',
 			store_rdrc: strToBool(cache_file_store_rdrc),
 			rdrc_timeout: strToTime(cache_file_rdrc_timeout),
-		}
+		},
+		clash_api: (enable_clash_api === '1') ? {
+			external_controller: external_controller,
+			secret: secret,
+			default_mode: default_mode
+		} : null
 	};
 }
 /* Experimental end */

@@ -595,6 +595,8 @@ chain homeproxy_mangle_tun {
 
 	iifname {{ tun_name }} counter return
 
+	ct direction reply counter return // 豁免所有端口转发的回程流量,此防火墙规则旨在修复homeproxy开启TUN+自定义路由+不勾选绕过中国流量模式下，防火墙的端口转发规则失效的问题
+
 	ip daddr @homeproxy_wan_proxy_addr_v4 counter goto homeproxy_mangle_tun_mark
 	{% if (ipv6_support === '1'): %}
 	ip6 daddr @homeproxy_wan_proxy_addr_v6 counter goto homeproxy_mangle_tun_mark
